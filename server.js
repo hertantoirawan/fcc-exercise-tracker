@@ -92,17 +92,32 @@ app.post('/api/exercise/add', (req, res) => {
 
 // retrieve a full exercise log of any user by getting /api/exercise/log with a parameter of userId(_id). 
 // App will return the user object with added array log and count (total exercise count).
-app.get('/api/exercise/log?userId=:user_id', (req, res) => {
-  let filter = { userId: req.params.user_id };
-  
-  Exercise.find(filter, (err, result) => {
-    if (err) return console.error(err); //TODO: log error properly
-    res.json(result);
+// retrieve part of the log of any user by also passing along optional parameters of from & to or limit. 
+// (Date format yyyy-mm-dd, limit = int)app.get('/api/exercise/log', (req, res) => {
+  Athlete.findById(req.query.userId, (err, user) => {
+    if (user == null){
+      res.send("Unknown userId");    
+    }
+    else {
+      let filter = { userId: req.query.userId };
+      let limit = (typeof req.query.limit === 'undefined') ? 0 : req.query.limit;
+
+      Exercise
+      .find(filter, "description duration date -_id")
+      .limit(parseInt(limit))
+      .exec((err, result) => {
+        if (err) return console.error(err); //TODO: log error properly
+
+        res.json({
+          "_id": req.query.userId,
+          "username": user.username,
+          "count": result.length,
+          "log": result //TODO: change date format to 'Sat Sep 05 2020'
+        });
+      });
+    }    
   });
 });
-
-// retrieve part of the log of any user by also passing along optional parameters of from & to or limit. 
-// (Date format yyyy-mm-dd, limit = int)
 
 
 // Not found middleware
