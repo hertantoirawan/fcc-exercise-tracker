@@ -63,11 +63,14 @@ const Exercise = mongoose.model('Exercise', new mongoose.Schema({
 app.post('/api/exercise/add', (req, res) => {
   Athlete.findById(req.body.userId, (err, user) => { 
     if (user == null){
-      res.send("Unknown userId");    
+      res.send("Unknown userId");
+      return;    
     }
     else {
         let activityDate = req.body.date;
         if (activityDate === '') activityDate = new Date();
+
+        //TODO: add date and druation validation
 
         let activity = new Exercise({ 
           userId: req.body.userId,
@@ -93,14 +96,39 @@ app.post('/api/exercise/add', (req, res) => {
 // retrieve a full exercise log of any user by getting /api/exercise/log with a parameter of userId(_id). 
 // App will return the user object with added array log and count (total exercise count).
 // retrieve part of the log of any user by also passing along optional parameters of from & to or limit. 
-// (Date format yyyy-mm-dd, limit = int)app.get('/api/exercise/log', (req, res) => {
+// (Date format yyyy-mm-dd, limit = int)
+app.get('/api/exercise/log', (req, res) => {
   Athlete.findById(req.query.userId, (err, user) => {
     if (user == null){
-      res.send("Unknown userId");    
+      res.send("Unknown userId");
+      return;    
     }
     else {
-      let filter = { userId: req.query.userId };
+      let fromDate = req.query.from;
+      let toDate = req.query.to;
       let limit = (typeof req.query.limit === 'undefined') ? 0 : req.query.limit;
+
+      let filter = {};
+      filter.userId = req.query.userId;
+
+      //check date format and ignore if not valid
+      //TODO: make this if-statements more elegant
+      if ((fromDate !== '') && (toDate !== '')) {
+        filter.date = {
+          $gte: (fromDate === '') ? undefined : new Date(new Date(fromDate).setHours(00, 00, 00)),
+          $lt: (toDate === '') ? null : new Date(new Date(toDate).setHours(23, 59, 59)) //TODO: change to from date + 1
+        };    
+      }
+      else if (fromDate !== '') {
+        filter.date = {
+          $gte: (fromDate === '') ? undefined : new Date(new Date(fromDate).setHours(00, 00, 00)),
+        };    
+      }
+      else if (toDate !== '') {
+        filter.date = {
+          $lt: (toDate === '') ? null : new Date(new Date(toDate).setHours(23, 59, 59)) //TODO: change to from date + 1
+        };    
+      }
 
       Exercise
       .find(filter, "description duration date -_id")
@@ -111,6 +139,8 @@ app.post('/api/exercise/add', (req, res) => {
         res.json({
           "_id": req.query.userId,
           "username": user.username,
+          "from": (fromDate === '') ? undefined : fromDate,
+          "to": (toDate === '') ? undefined : toDate,
           "count": result.length,
           "log": result //TODO: change date format to 'Sat Sep 05 2020'
         });
