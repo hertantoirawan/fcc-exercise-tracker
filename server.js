@@ -77,7 +77,7 @@ app.post('/api/exercise/add', (req, res) => {
         }
 
         let activityDate = req.body.date;
-        if (activityDate === '') {
+        if ((activityDate === '') || (activityDate === undefined)) {
           activityDate = new Date();
         }
         else if (!isValidDate(activityDate)) {
@@ -95,11 +95,11 @@ app.post('/api/exercise/add', (req, res) => {
           if (err) return console.error(err); //TODO: log error properly
 
           res.json({ 
-            "username": user.username,
-            "description": doc.description,
-            "duration": doc.duration,
             "_id": doc._id,
+            "username": user.username,
             "date": formatDate(doc.date, 'iii MMM dd yyyy'),
+            "duration": doc.duration,
+            "description": doc.description
           });   
         });
     }
