@@ -95,11 +95,11 @@ app.post('/api/exercise/add', (req, res) => {
           if (err) return console.error(err); //TODO: log error properly
 
           res.json({ 
-            "_id": doc._id,
             "username": user.username,
-            "date": formatDate(doc.date, 'iii MMM dd yyyy'),
+            "description": doc.description,
             "duration": doc.duration,
-            "description": doc.description
+            "_id": doc._id,
+            "date": formatDate(doc.date, 'iii MMM dd yyyy'),
           });   
         });
     }
