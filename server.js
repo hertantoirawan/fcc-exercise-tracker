@@ -5,7 +5,6 @@ const formatDate = require('date-fns/format');
 const isDateValid = require('date-fns/isValid');
 const parseISO = require('date-fns/parseISO');
 const addDays = require('date-fns/addDays')
-const assert = require("assert");
 
 const cors = require('cors')
 
@@ -63,7 +62,7 @@ app.get('/api/exercise/users', (req, res) => {
 // TODO: move to a separate model file
 const Exercise = mongoose.model('Exercise', new mongoose.Schema({
   userId: {
-    type: mongoose.Types.ObjectId, // TODO: might need to be ObjectId type, instead of String
+    type: mongoose.Types.ObjectId,
     required: true
   },
   description: {
@@ -77,6 +76,7 @@ const Exercise = mongoose.model('Exercise', new mongoose.Schema({
   date: Date,
 }));
 
+// add an exercise for the athlete
 app.post('/api/exercise/add', (req, res) => {
   Athlete.findById(req.body.userId, (err, user) => { 
     if (user == null){
