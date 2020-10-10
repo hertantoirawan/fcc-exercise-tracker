@@ -101,7 +101,7 @@ app.post('/api/exercise/add', (req, res) => {
             "_id": doc._id,
             "username": user.username,
             "date": formatDate(doc.date, 'iii MMM dd yyyy'),
-            "duration": doc.duration,
+            "duration": parseInt(doc.duration),
             "description": doc.description
           });   
         });
