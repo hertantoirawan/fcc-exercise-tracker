@@ -58,7 +58,10 @@ app.get('/api/exercise/users', (req, res) => {
 
 // TODO: move to a separate model file
 const Exercise = mongoose.model('Exercise', new mongoose.Schema({
-  userId: String,
+  userId: {
+    type: ObjectId, // TODO: might need to be ObjectId type, instead of String
+    required: true
+  },
   description: String,
   duration: Number,
   date: Date,
