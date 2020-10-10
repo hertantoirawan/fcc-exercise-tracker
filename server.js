@@ -92,7 +92,7 @@ app.post('/api/exercise/add', (req, res) => {
         let activity = new Exercise({ 
           userId: mongoose.Types.ObjectId(req.body.userId),
           description: req.body.description,
-          duration: parseInt(req.body.duration),
+          duration: Number(req.body.duration),
           date: activityDate,
         });
         activity.save((err, doc) => {
