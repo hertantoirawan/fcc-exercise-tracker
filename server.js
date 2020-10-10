@@ -126,7 +126,7 @@ app.get('/api/exercise/log', (req, res) => {
       let limit = ((req.query.limit === '') || !isNumeric(req.query.limit)) ? 0 : req.query.limit;
 
       let filter = {};
-      filter.userId = req.query.userId;
+      filter.userId = mongoose.Types.ObjectId(req.query.userId);
 
       // TODO: make this if-statements more elegant
       let filterFromDate = '', filterToDate = '';
