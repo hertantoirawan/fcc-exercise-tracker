@@ -59,7 +59,7 @@ app.get('/api/exercise/users', (req, res) => {
 // TODO: move to a separate model file
 const Exercise = mongoose.model('Exercise', new mongoose.Schema({
   userId: {
-    type: ObjectId, // TODO: might need to be ObjectId type, instead of String
+    type: mongoose.Types.ObjectId, // TODO: might need to be ObjectId type, instead of String
     required: true
   },
   description: String,
@@ -89,7 +89,7 @@ app.post('/api/exercise/add', (req, res) => {
         }        
 
         let activity = new Exercise({ 
-          userId: req.body.userId,
+          userId: mongoose.Types.ObjectId(req.body.userId),
           description: req.body.description,
           duration: req.body.duration,
           date: activityDate,
