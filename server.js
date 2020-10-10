@@ -58,14 +58,14 @@ app.get('/api/exercise/users', (req, res) => {
 
 // TODO: move to a separate model file
 const Exercise = mongoose.model('Exercise', new mongoose.Schema({
-  userId: {
+  _id: {
     type: mongoose.Types.ObjectId, // TODO: might need to be ObjectId type, instead of String
     required: true
   },
   description: String,
   duration: Number,
   date: Date,
-}));
+}, { _id: false }));
 
 app.post('/api/exercise/add', (req, res) => {
   Athlete.findById(req.body.userId, (err, user) => { 
@@ -89,7 +89,7 @@ app.post('/api/exercise/add', (req, res) => {
         }        
 
         let activity = new Exercise({ 
-          userId: mongoose.Types.ObjectId(req.body.userId),
+          _id: mongoose.Types.ObjectId(req.body.userId),
           description: req.body.description,
           duration: req.body.duration,
           date: activityDate,
@@ -126,7 +126,7 @@ app.get('/api/exercise/log', (req, res) => {
       let limit = ((req.query.limit === '') || !isNumeric(req.query.limit)) ? 0 : req.query.limit;
 
       let filter = {};
-      filter.userId = mongoose.Types.ObjectId(req.query.userId);
+      filter._id = mongoose.Types.ObjectId(req.query.userId);
 
       // TODO: make this if-statements more elegant
       let filterFromDate = '', filterToDate = '';
