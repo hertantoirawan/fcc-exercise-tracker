@@ -5,6 +5,7 @@ const formatDate = require('date-fns/format');
 const isDateValid = require('date-fns/isValid');
 const parseISO = require('date-fns/parseISO');
 const addDays = require('date-fns/addDays')
+const assert = require("assert");
 
 const cors = require('cors')
 
@@ -91,17 +92,17 @@ app.post('/api/exercise/add', (req, res) => {
         let activity = new Exercise({ 
           userId: mongoose.Types.ObjectId(req.body.userId),
           description: req.body.description,
-          duration: req.body.duration,
+          duration: parseInt(req.body.duration),
           date: activityDate,
         });
         activity.save((err, doc) => {
           if (err) return console.error(err); //TODO: log error properly
-
+          
           res.json({ 
             "_id": doc._id,
             "username": user.username,
             "date": formatDate(doc.date, 'iii MMM dd yyyy'),
-            "duration": parseInt(doc.duration),
+            "duration": doc.duration,
             "description": doc.description
           });   
         });
