@@ -4,7 +4,8 @@
 	"description": "A REST API project, part of Free Code Camp's curriculum",
 	"main": "server.js",
 	"scripts": {
-		"start": "node server.js"
+		"start": "node server.js",
+		"pretest": "eslint --ignore-path .gitignore ."
 	},
 	"dependencies": {
 		"body-parser": "^1.15.2",
@@ -26,5 +27,9 @@
 		"node",
 		"gomix",
 		"express"
-	]
+	],
+	"devDependencies": {
+		"eslint": "^7.13.0",
+		"eslint-config-strongloop": "^2.1.0"
+	}
 }
